@@ -1,12 +1,12 @@
-from scrapy.spider import BaseSpider
+# from scrapy.spider import BaseSpider
 
 
-class SwedbankSpider(BaseSpider):
-    name = "swedb"
+# class SwedbankSpider(BaseSpider):
+#     name = "swedb"
     
-    start_urls = [
-        ""
-        ]
+#     start_urls = [
+#         ""
+#         ]
     
-    def parse(self, response):
+#     def parse(self, response):
         

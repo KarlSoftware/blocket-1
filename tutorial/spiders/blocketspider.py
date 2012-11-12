@@ -16,25 +16,25 @@ class BlocketSpider(BaseSpider):
 
     def get_blocket_items(self, hxs, classname):
             xpath = '//div[@class="' + classname + '"]'
-            items = hxs.select(xpath)
-            return items
+            return hxs.select(xpath)
 
     def print_to_file(self,text):
         output_file = self.output_file
         output_file.write(text)
-        output_file.write(unicode('</br>'))
+        output_file.write(unicode('</br>\n'))
 
     def iterate_blocket_items(self,items):
         for item in items:
-            price = item.select('div/p').extract()[0]
+            price = item.select('div/p/text()').extract()[0]
             # cleaning the tags and whitespace away
-            price = re.sub('<.*>', '',price)
             price = re.sub(':.*','', price)
             price = re.sub('\s','', price)
-            
+            # concat the strings with price and text
+            text = item.select('div/a/text()').extract()[0] + u' ' + price
             # if the item costs more
             if price and int(price) > self.min_cost and int(price) < self.max_cost:
-                self.print_to_file(price)
+                self.print_to_file(text)
+
             
     def parse(self, response):
 

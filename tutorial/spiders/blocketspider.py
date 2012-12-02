@@ -6,13 +6,17 @@ import re
 class BlocketSpider(BaseSpider):
     name = "blocket"
     allowed_domains = ["blocket.se"]
-    start_urls = [
-        "http://www.blocket.se/hela_sverige?q=downhill&cg=6060&w=3&st=s&c=&ca=14&l=0&md=th"
-    ]
-    output_file = codecs.open("/home/jonas/Kod/scrapy/tutorial/test.html",
+
+    output_file = codecs.open("/home/jonas/data/scrapy/blocket.txt",
                                   encoding='utf-8', mode='w+')
     max_cost = 13000
     min_cost = 4000
+
+    def __init__(self, searchword='downhill', category='6060'):
+ 
+        self.start_urls = [
+            "http://www.blocket.se/hela_sverige?q=%s&cg=%s&w=3&st=s&c=&ca=14&l=0&md=th" % ( searchword, category )
+            ]
 
     def get_blocket_items(self, hxs, classname):
             xpath = '//div[@class="' + classname + '"]'

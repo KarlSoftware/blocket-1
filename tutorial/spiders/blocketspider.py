@@ -1,5 +1,5 @@
 from scrapy.spider import BaseSpider
-from scrapy.selector import HtmlXPathSelector
+from scrapy.selector import Selector
 import codecs
 import re
 
@@ -7,7 +7,7 @@ class BlocketSpider(BaseSpider):
     name = "blocket"
     allowed_domains = ["blocket.se"]
 
-    output_file = codecs.open("/home/jonas/data/scrapy/blocket.txt",
+    output_file = codecs.open("/home/jonas/data/scrapy/blocket.csv",
                                   encoding='utf-8', mode='w+')
     max_cost = 13000
     min_cost = 4000
@@ -20,7 +20,7 @@ class BlocketSpider(BaseSpider):
 
     def get_blocket_items(self, hxs, classname):
             xpath = '//div[@class="' + classname + '"]'
-            return hxs.select(xpath)
+            return hxs.xpath(xpath)
 
     def print_to_file(self,text):
         """Print a text to a file that is specified for this class"""
@@ -30,7 +30,7 @@ class BlocketSpider(BaseSpider):
 
     def get_relative_item(self,item,xpath):
         """Gets the path from a html path selector, returns False if no hit"""
-        result = item.select(xpath).extract()
+        result = item.xpath(xpath).extract()
         if result.__len__() == 0:
             return False
         return result[0]
@@ -45,15 +45,15 @@ class BlocketSpider(BaseSpider):
             if price:
                 price = re.sub('\s','',price)
                 price = re.sub('\:.*','',price)
-                text = price + text
+                text = price
             else:
                 continue
             name = self.get_relative_item(item,'div/a/text()')
             if name:
-                text = name + u' ' + text
+                text = name + u',' + text
             date = self.get_relative_item(item,'div/div/text()')
             if date:
-                text = date + u' ' + text
+                text = date + u',' + text
             
             
             # if the item costs more
@@ -64,7 +64,7 @@ class BlocketSpider(BaseSpider):
     def parse(self, response):
 
 
-        hxs = HtmlXPathSelector(response)
+        hxs = Selector(response)
         
 
         
@@ -78,6 +78,3 @@ class BlocketSpider(BaseSpider):
                 
 
         self.output_file.close()
-    
-
-        
